@@ -1,0 +1,35 @@
+{
+  "id": "draw.io",
+  "cpus": 2,
+  "mem": 1024,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "fjudith/draw.io",
+      "network": "BRIDGE",
+      "portMappings": [
+        { "protocol": "tcp", "hostPort": 0, "containerPort": 8080 }
+      ]
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "MESOS_TCP",
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "portIndex": 0,
+      "timeoutSeconds": 15,
+      "maxConsecutiveFailures": 3
+    }
+  ],
+  "backoffFactor": 5,
+  "backoffSeconds": 10,
+  "maxLaunchDelaySeconds": 7200,
+  "labels": {
+    "HAPROXY_GROUP": "external",
+    "HAPROXY_0_VHOST": "example.com",
+    "HAPROXY_0_FRONTEND_HEAD": "",
+    "HAPROXY_0_FRONTEND_BACKEND_GLUE": ""
+  }
+}
