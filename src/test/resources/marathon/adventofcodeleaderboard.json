@@ -1,0 +1,59 @@
+{
+  "id": "/innovation/adventcalendar/master",
+  "role": "innovation",
+  "cmd": null,
+  "cpus": 0.1,
+  "mem": 1024,
+  "disk": 0,
+  "gpus": 0,
+  "instances": 1,
+  "acceptedResourceRoles": [],
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "forcePullImage": true,
+      "image": "inseefrlab/adventofcodeleaderboard",
+      "parameters": [],
+      "privileged": false
+    },
+    "volumes": [],
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 0,
+        "labels": {},
+        "name": "default",
+        "protocol": "tcp",
+        "servicePort": 10141
+      }
+    ]
+  },
+  "env": {
+    "proxy_host": "proxy.corporation.com",
+    "date_timezone": "GMT+1",
+    "proxy_use": "true",
+    "proxy_port": "8080"
+  },
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 120,
+      "intervalSeconds": 30,
+      "maxConsecutiveFailures": 3,
+      "portIndex": 0,
+      "protocol": "MESOS_TCP",
+      "ipProtocol": "IPv4",
+      "timeoutSeconds": 5,
+      "delaySeconds": 15
+    }
+  ],
+  "labels": {
+    "HAPROXY_0_VHOST": "github.com/InseeFrLab/AdventOfCodeLeaderboard"
+  },
+  "networks": [
+    {
+      "mode": "container/bridge"
+    }
+  ],
+  "portDefinitions": [],
+  "maxLaunchDelaySeconds": 300
+}

@@ -5,6 +5,9 @@ import fr.insee.innovation.marathontokubernetes.services.marathon.MarathonImport
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,9 +24,10 @@ public class MarathonToKubernetesConverterTest {
     MarathonImporter importer;
 
 
-    @Test
-    public void shouldConvertWithoutErrors() {
-        InputStream input = getClass().getResourceAsStream("/marathon/drawio.json");
+    @ParameterizedTest
+    @ValueSource(strings = {"/marathon/drawio.json","/marathon/adventofcodeleaderboard.json"})
+    public void shouldConvertWithoutErrors( String location) {
+        InputStream input = getClass().getResourceAsStream(location);
         List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input),"draw-io");
         Assertions.assertNotNull(kubContract);
         Assertions.assertEquals(3, kubContract.size());

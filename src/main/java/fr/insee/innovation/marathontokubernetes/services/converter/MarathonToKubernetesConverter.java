@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,12 +33,12 @@ public class MarathonToKubernetesConverter {
     }
 
     private HasMetadata getIngress(App appToConvert, String name) {
-
+        Collection<Port> portMappings = getPortMappings(appToConvert);
         List<IngressRule> rules = appToConvert.getLabels().entrySet().stream().filter(entry -> PATTERN_HAPROXY_VHOST.matcher(entry.getKey()).matches()).map(entry -> {
                     Matcher matcher = PATTERN_HAPROXY_VHOST.matcher(entry.getKey());
                     matcher.find();
             int portIndex = Integer.parseInt(matcher.group(1));
-            int port = ((Port) appToConvert.getContainer().getDocker().getPortMappings().toArray()[portIndex]).getContainerPort();
+            int port = ((Port) portMappings.toArray()[portIndex]).getContainerPort();
             return new IngressRuleBuilder().withHost(entry.getValue()).withNewHttp().withPaths(new HTTPIngressPathBuilder().withPath("/").withBackend(new IngressBackendBuilder().withNewServicePort(port).withNewServiceName(name).build()).build()).endHttp().build();
         }
         ).collect(Collectors.toList());
@@ -49,8 +46,14 @@ public class MarathonToKubernetesConverter {
                 .withNewSpec().withRules(rules).endSpec().build();
     }
 
+    private Collection<Port> getPortMappings(App appToConvert) {
+        Collection<Port> portMappings = appToConvert.getContainer().getDocker().getPortMappings() != null ? appToConvert.getContainer().getDocker().getPortMappings() : appToConvert.getContainer().getPortMappings();
+        return portMappings;
+    }
+
     private HasMetadata getService(App appToConvert, String name) {
-        List<ServicePort> servicePorts = appToConvert.getContainer().getDocker().getPortMappings().stream().map(portMapping ->
+        Collection<Port> portMappings = getPortMappings(appToConvert);
+        List<ServicePort> servicePorts = portMappings.stream().map(portMapping ->
                 new ServicePortBuilder().withName(portMapping.getName() == null ? name+"-"+UUID.randomUUID().toString() : portMapping.getName()).withTargetPort(new IntOrString(portMapping.getContainerPort())).withPort(portMapping.getContainerPort()).build()).collect(Collectors.toList());
 
         return new ServiceBuilder().withNewMetadata().withName(name).endMetadata().withNewSpec().withPorts(servicePorts).withSelector(Map.of("app",name)).endSpec().build();
