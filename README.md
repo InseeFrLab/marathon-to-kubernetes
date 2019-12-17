@@ -8,8 +8,8 @@ Support is quite minimal and was primarily tailored for our internal use at [Ins
 Packaging is still a work in progress.  
 At the moment the only way to run the app is to to run it from source (either by writing more tests or by creating a main function) but we intend to support the following usages :
 
-- Java CLI (something like `java -jar jeanmichel.jar input.json`)
-- Docker run (something like `cat input.json | docker run -i image)
+- Java CLI (something like `java -jar jeanmichel.jar marathon.json`)
+- Docker run (something like `cat marathon.json | docker run -i image)
 - Java library that you can include within your app
 - Maybe a simple webapp UI
 
@@ -26,4 +26,3 @@ At the moment the only way to run the app is to to run it from source (either by
 | HAPROXY_X_VHOST | Ok          |         |
 | Fetch           | In progress |         |
 | Healthcheck     |             |         |
-| HAPROXY_X_VHOST | Ok          |         |
