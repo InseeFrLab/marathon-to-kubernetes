@@ -8,7 +8,7 @@ Support is quite minimal and was primarily tailored for our internal use at [Ins
 Packaging is still a work in progress.  
 At the moment the only way to run the app is to to run it from source (either by writing more tests or by creating a main function) but we intend to support the following usages :
 
-- Java CLI (something like `java -jar jeanmichel.jar marathon.json`)
+- Java CLI ( `java -jar jeanmichel.jar "marathon.json appname"`) where appname can be null.
 - Docker run (something like `cat marathon.json | docker run -i image)
 - Java library that you can include within your app
 - Maybe a simple webapp UI

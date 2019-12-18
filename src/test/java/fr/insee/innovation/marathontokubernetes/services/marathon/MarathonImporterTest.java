@@ -16,7 +16,6 @@ public class MarathonImporterTest {
     @Autowired
     private MarathonImporter importer;
 
-    @Test
     @ParameterizedTest
     @ValueSource(strings = {"/marathon/drawio.json"})
     public void shouldImportDrawIo(String location) {
