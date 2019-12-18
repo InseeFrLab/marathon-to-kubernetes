@@ -33,7 +33,10 @@ public class MarathonToKubernetesConverter {
         List<HasMetadata> components = new ArrayList<>();
         components.add(getDeployment(appToConvert, name));
         components.add(getService(appToConvert,name));
-        components.add(getIngress(appToConvert, name));
+        if (appToConvert.getLabels() != null && appToConvert.getLabels().size() > 0) {
+            components.add(getIngress(appToConvert, name));
+        }
+
         if (appToConvert.getEnv() != null && appToConvert.getEnv().size() > 0) {
             components.add(getConfigMap(appToConvert, name));
         }
