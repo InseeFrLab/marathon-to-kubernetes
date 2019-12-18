@@ -11,6 +11,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.Port;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -23,6 +24,9 @@ import java.util.stream.Collectors;
 public class MarathonToKubernetesConverter {
 
     private static final Pattern PATTERN_HAPROXY_VHOST = Pattern.compile("HAPROXY_([0-9]*)_VHOST");
+
+    @Value("${kubernetes.ingress.class}")
+    private String ingressClass;
 
     public List<HasMetadata> convert(App appToConvert, String name) {
         List<HasMetadata> components = new ArrayList<>();
@@ -42,7 +46,7 @@ public class MarathonToKubernetesConverter {
             return new IngressRuleBuilder().withHost(entry.getValue()).withNewHttp().withPaths(new HTTPIngressPathBuilder().withPath("/").withBackend(new IngressBackendBuilder().withNewServicePort(port).withNewServiceName(name).build()).build()).endHttp().build();
         }
         ).collect(Collectors.toList());
-        return new IngressBuilder().withNewMetadata().withName(name).withAnnotations(Map.of("kubernetes.io/ingress.class", "traefik")).endMetadata()
+        return new IngressBuilder().withNewMetadata().withName(name).withAnnotations(Map.of("kubernetes.io/ingress.class", ingressClass)).endMetadata()
                 .withNewSpec().withRules(rules).endSpec().build();
     }
 
