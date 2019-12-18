@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +34,18 @@ public class MarathonToKubernetesConverter {
         components.add(getDeployment(appToConvert, name));
         components.add(getService(appToConvert,name));
         components.add(getIngress(appToConvert, name));
+        if (appToConvert.getEnv() != null && appToConvert.getEnv().size() > 0) {
+            components.add(getConfigMap(appToConvert, name));
+        }
         return components;
+    }
+
+    private HasMetadata getConfigMap(App appToConvert, String name) {
+        Map<String,String> env = new HashMap<>();
+        appToConvert.getEnv().entrySet().forEach(entry -> {
+            env.put(entry.getKey(),String.valueOf(entry.getValue()));
+        });
+        return new ConfigMapBuilder().withNewMetadata().withName(name+"-config").endMetadata().withData(env).build();
     }
 
     private HasMetadata getIngress(App appToConvert, String name) {
@@ -64,7 +76,11 @@ public class MarathonToKubernetesConverter {
     }
 
     private HasMetadata getDeployment(App appToConvert, String name) {
-        Container container = new ContainerBuilder().withName(name).withImage(appToConvert.getContainer().getDocker().getImage()).build();
+        ContainerBuilder containerBuilder = new ContainerBuilder();
+        if (appToConvert.getEnv() != null && appToConvert.getEnv().size() > 0) {
+            containerBuilder.addNewEnvFrom().withNewConfigMapRef().withName(name+"-config").endConfigMapRef().endEnvFrom();
+        }
+        Container container = containerBuilder.withName(name).withImage(appToConvert.getContainer().getDocker().getImage()).build();
 
         return new DeploymentBuilder()
                 .withNewMetadata().withName(name).endMetadata()
