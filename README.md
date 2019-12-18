@@ -22,7 +22,7 @@ At the moment the only way to run the app is to to run it from source (either by
 | Instances       | Ok          |         |
 | CPU / Mem       | In progress |         |
 | PORT_MAPPINGS   | Ok          |         |
-| Env             | In progress |         |
+| Env             | Ok          |         |
 | HAPROXY_X_VHOST | Ok          |         |
 | Fetch           | In progress |         |
 | Healthcheck     |             |         |
