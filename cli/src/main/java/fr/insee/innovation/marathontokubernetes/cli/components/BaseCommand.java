@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import fr.insee.innovation.marathontokubernetes.core.controller.ConvertController;
 import org.springframework.stereotype.Controller;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -18,41 +19,39 @@ import picocli.CommandLine.Parameters;
  * JavaCliComponent
  */
 @Component
-@Command(name = "convertToKub", mixinStandardHelpOptions = true, version = "checksum 4.0", description = "Prints the checksum (MD5 by default) of a file to STDOUT.")
+@Command(name="", mixinStandardHelpOptions = true, description = "Converts a marathon.json file to Kubernetes .yml")
 public class BaseCommand implements Callable<Integer> {
 
     @Parameters(index="0", description = "Path to the file to convert")
-    private String filePath;
-
-    @Parameters(index = "1", description = "Path where to export converted file")
-    private String outputPath="./" ;
+    private String inputFile;
 
     @Option(names = {"-n","--name"},description = "Name of the service")
     private String name;
 
-    @Option(names={"-o","--outputFormat"},description="Format of output can be console or file")
-    private String outputFormat="console";
+    @Option(names={"-o","--output"},description="Location of the output file")
+    private String outputPath;
     
     @Autowired
 	ConvertController converter;
     
     @Override
     public Integer call() throws Exception {
-        InputStream input = new FileInputStream(filePath);
+        InputStream input = new FileInputStream(inputFile);
         String converted = converter.convert(input, name);
-        if (outputFormat.equals("console")){
+        if (isConsole()) {
             System.out.println(converted);
             return 0;
         }
-        else if(outputFormat.equals("file")){
+        else {
             FileOutputStream out = new FileOutputStream(outputPath+"service.yml");
             out.write(converted.getBytes());
             out.close();
             return 0;
         }
-        else{
-            return 1;
-        }
+    }
+
+    private boolean isConsole() {
+        return outputPath == null;
     }
 
 }
