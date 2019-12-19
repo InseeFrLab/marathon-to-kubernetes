@@ -7,10 +7,16 @@ Support is quite minimal and was primarily tailored for our internal use at [Ins
 
 ## Usage
 
-Packaging is still a work in progress.  
-At the moment the only way to run the app is to to run it from source (either by writing more tests or by creating a main function) but we intend to support the following usages :
+### Using CLI
 
-- Java CLI ( `java -jar jeanmichel.jar "marathon.json appname"`) where appname can be null.
+CLI can be downloaded from the [Github releases page](https://github.com/InseeFrLab/marathon-to-kubernetes/releases)
+You can run the converter by using the cli `jar` using Java (version 11+ required) :  
+`java -jar marathon-to-kubernetes-cli-version.jar [-n=<name>] [-o=<outputPath>] <inputFile>`
+
+### Usage roadmap
+
+In the future we intend to support the following additional usages :
+
 - Docker run (something like `cat marathon.json | docker run -i image)
 - Java library that you can include within your app
 - Maybe a simple webapp UI
