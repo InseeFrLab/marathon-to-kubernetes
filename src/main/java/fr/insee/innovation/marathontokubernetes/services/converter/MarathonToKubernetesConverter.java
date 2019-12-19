@@ -83,6 +83,9 @@ public class MarathonToKubernetesConverter {
         if (appToConvert.getEnv() != null && appToConvert.getEnv().size() > 0) {
             containerBuilder.addNewEnvFrom().withNewConfigMapRef().withName(name+"-config").endConfigMapRef().endEnvFrom();
         }
+        if (appToConvert.getContainer().getDocker().isPrivileged()) {
+            containerBuilder.editOrNewSecurityContext().withPrivileged(true).endSecurityContext();
+        }
         Container container = containerBuilder.withName(name).withImage(appToConvert.getContainer().getDocker().getImage()).build();
 
         return new DeploymentBuilder()

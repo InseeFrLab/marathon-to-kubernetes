@@ -4,6 +4,7 @@ import fr.insee.innovation.marathontokubernetes.controller.ConvertController;
 import fr.insee.innovation.marathontokubernetes.services.marathon.MarathonImporter;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,5 +43,16 @@ public class MarathonToKubernetesConverterTest {
         Assertions.assertEquals(4, kubContract.size());
         ConfigMap configMap = (ConfigMap) kubContract.stream().filter(e -> e instanceof ConfigMap).findFirst().get();
         Assertions.assertEquals(4, configMap.getData().size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"/marathon/privileged.json"})
+    public void shouldRunInPrivilegedMode(String location) {
+        InputStream input = getClass().getResourceAsStream(location);
+        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input),"privileged");
+        Assertions.assertNotNull(kubContract);
+        Deployment deployment = (Deployment) kubContract.stream().filter(e -> e instanceof Deployment).findFirst().get();
+        Assertions.assertEquals(1,deployment.getSpec().getTemplate().getSpec().getContainers().size());
+        Assertions.assertEquals(true,deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getSecurityContext().getPrivileged());
     }
 }
