@@ -18,6 +18,8 @@ deploy:
   token:
     secure: "AzNoxaTqCmo9I+SL34LXYS76DQz1/CvhrYkoUWVjZMt7ajJi8j7BcyFVIm3eIqjrAJPbEA/SRQrZcbQrcD7PZtWkBr1UZaT/zUlec8l8/hUJSmwhHhMQ8X4AcvUfZ3NUjEJi1Q6xzorf2reEaxwrD0FXtEE+EYS2bPumBbNv7l5rBPSFZmppDuCQzIWJnf9TJ1M6tmoOdfUV7YAGvN6W7vBlkmvPDhIdSKa5PIoJuOWMjwVhJd0/uh/9hOP4iu5dXaxc0quX75V2Qli6/7qFz8uelM58xP/JW/nEkjVyOJD9m+C/7XwX6LA0hv8gaDc/0BSKBvI1sHgC6Gb86Y8aIVSV4+9dol5Kc+mj2UW382VZ3NqlqkwWJKDp6kZA1PY4fmFC+lx/S+hto5V66K/+6+vpIL6KuRdo7UjiPj+DWZHksnHAbRECiT5cfrqWW1zfPqsiIf0LP4Bthm5VwBjsZiIKWX0+rgqwY72TW8YtShCyGEzNrQLa1jPRyDT2HhPyZq4UzpdexE6aWRO6k5HmXdrEEgika5CgEvw0PNQyUwocfHrWLJPCZzMTJFAkry+j0/EfEFWh+J/Jd5dQIjQKcYoiVQ6SmX8aETebTAcpLrYIEqxfb29rtG5JD/q+Ux4IvkOvw9w8Jcpe04jqDdZccgfWRdpxup8IeAXMvujKa/Y="
   file_glob: true
-  file: target/*.jar
+  file:
+    - core/target/*.jar
+    - cli/target/*.jar
   on:
     tags: true
