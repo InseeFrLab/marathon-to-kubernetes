@@ -31,8 +31,7 @@ deploy:
   skip_cleanup: true
   provider: script
   script:
-    - cd web && docker build -t inseefrlab/marathon-to-kubernetes .
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push inseefrlab/marathon-to-kubernetes
+    - cd web && ls target && docker build -t inseefrlab/marathon-to-kubernetes . && echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push inseefrlab/marathon-to-kubernetes
   on:
     branch: docker-web
 
