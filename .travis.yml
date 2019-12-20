@@ -21,5 +21,6 @@ deploy:
   file:
     - core/target/*.jar
     - cli/target/*.jar
+    - web/target/*.jar
   on:
     tags: true
