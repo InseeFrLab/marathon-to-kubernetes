@@ -49,6 +49,7 @@
 	<modules>
 		<module>core</module>
 		<module>cli</module>
+		<module>web</module>
 	</modules>
 
 </project>
