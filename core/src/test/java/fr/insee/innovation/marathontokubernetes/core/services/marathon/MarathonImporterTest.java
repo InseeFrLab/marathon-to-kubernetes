@@ -26,4 +26,13 @@ public class MarathonImporterTest {
         assertThat(apps).isNotNull().hasSize(1);
         assertThat(apps).first().satisfies(app -> assertThat(app.getCpus() == 2));
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"/marathon/group.json"})
+    public void shouldImportGroup(String location) {
+        InputStream input = getClass().getResourceAsStream(location);
+        List<App> apps = importer.importMarathonApp(input);
+        assertThat(apps).isNotNull().hasSize(2);
+        assertThat(apps).first().satisfies(app -> assertThat(app.getCpus() == 0.1));
+    }
 }

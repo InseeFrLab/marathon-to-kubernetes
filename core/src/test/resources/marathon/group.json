@@ -1,0 +1,92 @@
+[
+  {
+    "id": "/kibana",
+    "cpus": 0.1,
+    "mem": 2048,
+    "container": {
+      "type": "DOCKER",
+      "docker": {
+        "image": "docker.elastic.co/kibana/kibana-oss:6.8.3",
+        "network": "BRIDGE",
+        "forcePullImage": false,
+        "portMappings": [
+          {
+            "containerPort": 5601,
+            "hostPort": 0,
+            "protocol": "tcp",
+            "labels": {}
+          }
+        ],
+        "privileged": false
+      }
+    },
+    "env": {
+      "ELASTICSEARCH_URL": "xxx",
+      "ELASTICSEARCH_HOSTS": "xxx"
+    },
+    "labels": {
+      "DUMB_LABEL": "whatever"
+    },
+    "backoffSeconds": 10,
+    "backoffFactor": 5,
+    "maxLaunchDelaySeconds": 7200,
+    "healthChecks": [
+      {
+        "gracePeriodSeconds": 300,
+        "intervalSeconds": 60,
+        "maxConsecutiveFailures": 3,
+        "portIndex": 0,
+        "timeoutSeconds": 15,
+        "ignoreHttp1xx": false,
+        "protocol": "MESOS_TCP"
+      }
+    ]
+  },
+  {
+    "id": "/elastic",
+    "instances": 1,
+    "cpus": 0.1,
+    "mem": 2048,
+    "container": {
+      "type": "DOCKER",
+      "docker": {
+        "image": "docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.3",
+        "forcePullImage": false,
+        "privileged": false
+      },
+      "portMappings": [
+        {
+          "containerPort": 9200,
+          "hostPort": 0,
+          "protocol": "tcp",
+          "labels": {}
+        }
+      ]
+    },
+    "env": {
+      "ES_JAVA_OPTS": "-Xms1g -Xmx1g",
+      "discovery.type": "single-node"
+    },
+    "backoffSeconds": 10,
+    "backoffFactor": 5,
+    "maxLaunchDelaySeconds": 7200,
+    "healthChecks": [
+      {
+        "gracePeriodSeconds": 300,
+        "intervalSeconds": 60,
+        "maxConsecutiveFailures": 3,
+        "portIndex": 0,
+        "timeoutSeconds": 15,
+        "ignoreHttp1xx": false,
+        "protocol": "MESOS_TCP"
+      }
+    ],
+    "networks": [
+      {
+        "name": "dcos",
+        "mode": "container",
+        "labels": {}
+      }
+    ]
+  }
+]
