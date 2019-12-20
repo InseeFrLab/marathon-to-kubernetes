@@ -23,14 +23,15 @@ In the future we intend to support the following additional usages :
 
 ## Compatibility
 
-| Feature         | Status      | Comment |
-| --------------- | ----------- | ------- |
-| Single app      | Ok          |         |
-| Group           | In progress |         |
-| Instances       | Ok          |         |
-| CPU / Mem       | In progress |         |
-| PORT_MAPPINGS   | Ok          |         |
-| Env             | Ok          |         |
-| HAPROXY_X_VHOST | Ok          |         |
-| Fetch           | In progress |         |
-| Healthcheck     |             |         |
+| Feature         | Status      | Comment                                                                           |
+| --------------- | ----------- | --------------------------------------------------------------------------------- |
+| Single app      | Ok          |                                                                                   |
+| Multiple apps   | Ok          |                                                                                   |
+| Group           | In progress | Need to decide how to properly map Marathon group to kubernetes pods / containers |
+| Instances       | Ok          |                                                                                   |
+| CPU / Mem       | In progress |                                                                                   |
+| PORT_MAPPINGS   | Ok          |                                                                                   |
+| Env             | Ok          |                                                                                   |
+| HAPROXY_X_VHOST | Ok          |                                                                                   |
+| Fetch           | In progress |                                                                                   |
+| Healthcheck     |             |                                                                                   |
