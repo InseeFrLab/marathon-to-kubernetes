@@ -30,7 +30,6 @@ public class ApiConverter {
     @Autowired
     MarathonToKubernetesConverter converter;
 
-    // Si mapping vers App ne fonctionne pas voir HttpMessageReader
     @RequestMapping(value = "/convert", method = RequestMethod.POST, consumes = {
             MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.TEXT_PLAIN_VALUE })
     @ResponseStatus(code = HttpStatus.OK)

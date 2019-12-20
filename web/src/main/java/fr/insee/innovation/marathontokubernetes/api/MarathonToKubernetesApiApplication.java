@@ -18,15 +18,5 @@ public class MarathonToKubernetesApiApplication {
 		SpringApplication.run(MarathonToKubernetesApiApplication.class, args);
 	}
 
-	@Bean
-	public OpenAPI customOpenAPI() {
-		return new OpenAPI()
-				.components(new Components().addSecuritySchemes("basicScheme",
-						new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
-				.info(new Info().title("Marathon to Kubernetes API").version("0.0.1-Snapshot")
-						.license(new License().name("Apache 2.0")
-								.url("https://github.com/InseeFrLab/marathon-to-kubernetes"))
-						.contact(new Contact().email("FrInseeLab"))
-						.description("A Brief api to convert marathon to k8s"));
-	}
+
 }
