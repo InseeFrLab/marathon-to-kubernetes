@@ -10,16 +10,36 @@ Support is quite minimal and was primarily tailored for our internal use at [Ins
 ### Using CLI
 
 CLI can be downloaded from the [Github releases page](https://github.com/InseeFrLab/marathon-to-kubernetes/releases)
-You can run the converter by using the cli `jar` using Java (version 11+ required) :  
+You can run the converter using Java (version 11+ required) :  
 `java -jar marathon-to-kubernetes-cli-version.jar [-n=<name>] [-o=<outputPath>] <inputFile>`
+
+### Using API
+
+API can be downloaded from the [Github releases page](https://github.com/InseeFrLab/marathon-to-kubernetes/releases)
+You can run the API using Java (version 11+ required) :  
+`java -jar marathon-to-kubernetes-web-version.jar`
+
+API will then be accessible at  
+`http://localhost:8080/api/convert`  
+OpenAPI description is available at  
+`http://localhost:8080/api/`
+
+### Including it in your Java project
+
+The core `jar` is not (yet ?) available on maven central. For now you have to manually include it in your project.  
+The `jar` file can be downloaded from the [Github releases page](https://github.com/InseeFrLab/marathon-to-kubernetes/releases).  
+You can then install it locally or within your organisation :
+
+```
+mvn install:install-file -Dfile=./marathon-to-kubernetes-web-version.jar -DgroupId=fr.insee.innovation -DartifactId=marathon-to-kubernetes-core -Dversion=version -Dpackaging=jar
+```
 
 ### Usage roadmap
 
 In the future we intend to support the following additional usages :
 
-- Docker run (something like `cat marathon.json | docker run -i image)
-- Java library that you can include within your app
-- Maybe a simple webapp UI
+- Docker image for the API
+- Simple Web UI including a JSON editor
 
 ## Compatibility
 
