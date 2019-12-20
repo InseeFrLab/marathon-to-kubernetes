@@ -18,7 +18,7 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 public class MarathonToKubernetesConverterTest {
 
     @Autowired
-    MarathonToKubernetesConverter converter;
+    MarathonToKubernetesConverterImpl converter;
 
     @Autowired
     MarathonImporter importer;

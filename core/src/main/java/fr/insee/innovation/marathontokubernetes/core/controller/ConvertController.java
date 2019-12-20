@@ -4,10 +4,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.insee.innovation.marathontokubernetes.core.services.converter.MarathonToKubernetesConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import fr.insee.innovation.marathontokubernetes.core.services.converter.MarathonToKubernetesConverter;
 import fr.insee.innovation.marathontokubernetes.core.services.kubernetes.YmlExporter;
 import fr.insee.innovation.marathontokubernetes.core.services.marathon.MarathonImporter;
 import io.fabric8.kubernetes.api.model.HasMetadata;
@@ -30,7 +30,8 @@ public class ConvertController {
     }
 
     public String convert(InputStream input, String name) {
-        App app = importer.importMarathonApp(input);
+        List<App> apps = importer.importMarathonApp(input);
+        App app = apps.get(0);
         List<HasMetadata> listHasMetadata = converter.convert(app, name == null ? sanitizeName(app.getId()) : name);
         return listHasMetadata.stream().map(hasMetadata -> exporter.exportToYml(hasMetadata)).collect(Collectors.joining());
     }
