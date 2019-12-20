@@ -11,7 +11,7 @@ script:
   - mvn -B package
 
 after_success:
-  - mvn clean test org.jacoco:jacoco-maven-plugin:report org.jacoco:jacoco-maven-plugin:report-aggregate org.eluder.coveralls:coveralls-maven-plugin:report
+  - mvn test org.jacoco:jacoco-maven-plugin:report org.jacoco:jacoco-maven-plugin:report-aggregate org.eluder.coveralls:coveralls-maven-plugin:report
 
 deploy:
   skip_cleanup: true
