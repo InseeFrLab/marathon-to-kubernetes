@@ -23,14 +23,14 @@ In the future we intend to support the following additional usages :
 
 ## Compatibility
 
-| Feature         | Status      | Comment |
-| --------------- | ----------- | ------- |
-| Single app      | Ok          |         |
-| Group           | In progress |         |
-| Instances       | Ok          |         |
-| CPU / Mem       | In progress |         |
-| PORT_MAPPINGS   | Ok          |         |
-| Env             | Ok          |         |
-| HAPROXY_X_VHOST | Ok          |         |
-| Fetch           | In progress |         |
-| Healthcheck     |             |         |
+| Feature         | Status      | Comment                                                  |
+| --------------- | ----------- | -------------------------------------------------------- |
+| Single app      | Ok          |                                                          |
+| Group           | In progress |                                                          |
+| Instances       | Ok          |                                                          |
+| CPU / Mem       | Ok          | Resources are defined as "resources requests" not limits |
+| PORT_MAPPINGS   | Ok          |                                                          |
+| Env             | Ok          |                                                          |
+| HAPROXY_X_VHOST | Ok          |                                                          |
+| Fetch           | In progress |                                                          |
+| Healthcheck     |             |                                                          |

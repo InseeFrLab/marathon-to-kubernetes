@@ -18,6 +18,9 @@ import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.IntOrString;
+import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.QuantityBuilder;
+import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.api.model.ServicePortBuilder;
@@ -95,6 +98,10 @@ public class MarathonToKubernetesConverter {
         if (appToConvert.getContainer().getDocker().isPrivileged()) {
             containerBuilder.editOrNewSecurityContext().withPrivileged(true).endSecurityContext();
         }
+        Map<String,Quantity> resourcesRequests = new HashMap<>();
+        resourcesRequests.put("memory",new QuantityBuilder().withNewAmount(appToConvert.getMem().intValue()+"M").build());
+        resourcesRequests.put("cpu",new QuantityBuilder().withNewAmount((appToConvert.getCpus()*1000)+"m").build());
+        containerBuilder.withResources(new ResourceRequirementsBuilder().withRequests(resourcesRequests).build());
         Container container = containerBuilder.withName(name).withImage(appToConvert.getContainer().getDocker().getImage()).build();
 
         return new DeploymentBuilder()
