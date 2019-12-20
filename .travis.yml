@@ -1,6 +1,8 @@
 language: java
 jdk:
   - openjdk11
+services:
+  - docker
 
 before_install:
   - mvn -B versions:set -DnewVersion=$TRAVIS_BRANCH
@@ -29,7 +31,7 @@ deploy:
   skip_cleanup: true
   provider: script
   script:
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    && docker push inseefrlab/marathon-to-kubernetes
+    - docker build -t inseefrlab/marathon-to-kubernetes .
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push inseefrlab/marathon-to-kubernetes
   on:
     branch: docker-web
