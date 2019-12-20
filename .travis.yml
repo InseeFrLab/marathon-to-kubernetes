@@ -24,3 +24,12 @@ deploy:
     - web/target/*.jar
   on:
     tags: true
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script:
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    && docker push inseefrlab/marathon-to-kubernetes
+  on:
+    branch: docker-web
