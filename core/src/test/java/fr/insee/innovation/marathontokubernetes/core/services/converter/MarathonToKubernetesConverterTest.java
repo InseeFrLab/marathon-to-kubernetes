@@ -13,7 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import fr.insee.innovation.marathontokubernetes.core.services.marathon.MarathonImporter;
 import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.HTTPGetAction;
 import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.kubernetes.api.model.Probe;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 
 @SpringBootTest
@@ -25,20 +27,19 @@ public class MarathonToKubernetesConverterTest {
     @Autowired
     MarathonImporter importer;
 
-
     @ParameterizedTest
-    @ValueSource(strings = {"/marathon/drawio.json","/marathon/adventofcodeleaderboard.json"})
-    public void shouldConvertWithoutErrors( String location) {
+    @ValueSource(strings = { "/marathon/drawio.json", "/marathon/adventofcodeleaderboard.json" })
+    public void shouldConvertWithoutErrors(String location) {
         InputStream input = getClass().getResourceAsStream(location);
-        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input),"draw-io");
+        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input), "draw-io");
         Assertions.assertNotNull(kubContract);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/marathon/adventofcodeleaderboard.json"})
-    public void shouldConvertWithEnv( String location) {
+    @ValueSource(strings = { "/marathon/adventofcodeleaderboard.json" })
+    public void shouldConvertWithEnv(String location) {
         InputStream input = getClass().getResourceAsStream(location);
-        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input),"adventofcode");
+        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input), "adventofcode");
         Assertions.assertNotNull(kubContract);
         Assertions.assertEquals(4, kubContract.size());
         ConfigMap configMap = (ConfigMap) kubContract.stream().filter(e -> e instanceof ConfigMap).findFirst().get();
@@ -46,28 +47,47 @@ public class MarathonToKubernetesConverterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/marathon/privileged.json"})
+    @ValueSource(strings = { "/marathon/privileged.json" })
     public void shouldRunInPrivilegedMode(String location) {
         InputStream input = getClass().getResourceAsStream(location);
-        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input),"privileged");
+        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input), "privileged");
         Assertions.assertNotNull(kubContract);
-        Deployment deployment = (Deployment) kubContract.stream().filter(e -> e instanceof Deployment).findFirst().get();
-        Assertions.assertEquals(1,deployment.getSpec().getTemplate().getSpec().getContainers().size());
-        Assertions.assertEquals(true,deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getSecurityContext().getPrivileged());
+        Deployment deployment = (Deployment) kubContract.stream().filter(e -> e instanceof Deployment).findFirst()
+                .get();
+        Assertions.assertEquals(1, deployment.getSpec().getTemplate().getSpec().getContainers().size());
+        Assertions.assertEquals(true, deployment.getSpec().getTemplate().getSpec().getContainers().get(0)
+                .getSecurityContext().getPrivileged());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/marathon/drawio.json"})
+    @ValueSource(strings = { "/marathon/drawio.json" })
     public void shouldAddResourcesRequests(String location) {
         InputStream input = getClass().getResourceAsStream(location);
-        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input),"privileged");
+        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input), "privileged");
         Assertions.assertNotNull(kubContract);
-        Deployment deployment = (Deployment) kubContract.stream().filter(e -> e instanceof Deployment).findFirst().get();
-        Assertions.assertEquals(1,deployment.getSpec().getTemplate().getSpec().getContainers().size());
-        Map<String, Quantity> resourcesRequests =  deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getResources().getRequests();
-        Assertions.assertAll(
-                () -> Assertions.assertEquals(resourcesRequests.get("memory").getAmount(),"1024M"),
-                () -> Assertions.assertEquals(resourcesRequests.get("cpu").getAmount(),"2000.0m")
-        );
+        Deployment deployment = (Deployment) kubContract.stream().filter(e -> e instanceof Deployment).findFirst()
+                .get();
+        Assertions.assertEquals(1, deployment.getSpec().getTemplate().getSpec().getContainers().size());
+        Map<String, Quantity> resourcesRequests = deployment.getSpec().getTemplate().getSpec().getContainers().get(0)
+                .getResources().getRequests();
+        Assertions.assertAll(() -> Assertions.assertEquals(resourcesRequests.get("memory").getAmount(), "1024M"),
+                () -> Assertions.assertEquals(resourcesRequests.get("cpu").getAmount(), "2000.0m"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "/marathon/drawio.json" })
+    public void shouldAddHealthcheck(String location) {
+        InputStream input = getClass().getResourceAsStream(location);
+        List<HasMetadata> kubContract = converter.convert(importer.importMarathonApp(input), "privileged");
+        Assertions.assertNotNull(kubContract);
+        Deployment deployment = (Deployment) kubContract.stream().filter(e -> e instanceof Deployment).findFirst()
+                .get();
+        Assertions.assertEquals(1, deployment.getSpec().getTemplate().getSpec().getContainers().size());
+        Probe probe = deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getLivenessProbe();
+        HTTPGetAction httpGetAction = probe.getHttpGet();
+        Assertions.assertAll(() -> Assertions.assertEquals(httpGetAction.getScheme(), "MESOS_TCP"),
+                () -> Assertions.assertEquals(probe.getPeriodSeconds(), 60),
+                () -> Assertions.assertEquals(probe.getInitialDelaySeconds(), 300),
+                () -> Assertions.assertEquals(probe.getTimeoutSeconds(), 15));
     }
 }
