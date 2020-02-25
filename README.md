@@ -7,31 +7,53 @@ Support is quite minimal and was primarily tailored for our internal use at [Ins
 
 ## Usage
 
+### Using API
+
+API can be run using either Java or Docker.  
+Java release is available in the [Github releases page](https://github.com/InseeFrLab/marathon-to-kubernetes/releases)
+You can run the API using Java (version 11+ required) :  
+`java -jar marathon-to-kubernetes-web-version.jar`
+
+Docker release is available at [Dockerhub](https://hub.docker.com/r/inseefrlab/marathon-to-kubernetes)  
+`docker run -p 8080:8080 inseefrlab/marathon-to-kubernetes`
+
+API will then be accessible at  
+`http://localhost:8080/api/convert`  
+OpenAPI description is available at  
+`http://localhost:8080/api/`
+
+### Including it in your Java project
+
+The core `jar` is not (yet ?) available on maven central. For now you have to manually include it in your project.  
+The `jar` file can be downloaded from the [Github releases page](https://github.com/InseeFrLab/marathon-to-kubernetes/releases).  
+You can then install it locally or within your organisation :
+
+```
+mvn install:install-file -Dfile=./marathon-to-kubernetes-web-version.jar -DgroupId=fr.insee.innovation -DartifactId=marathon-to-kubernetes-core -Dversion=version -Dpackaging=jar
+```
+
 ### Using CLI
 
 CLI can be downloaded from the [Github releases page](https://github.com/InseeFrLab/marathon-to-kubernetes/releases)
-You can run the converter by using the cli `jar` using Java (version 11+ required) :  
+You can run the converter using Java (version 11+ required) :  
 `java -jar marathon-to-kubernetes-cli-version.jar [-n=<name>] [-o=<outputPath>] <inputFile>`
 
 ### Usage roadmap
 
-In the future we intend to support the following additional usages :
-
-- Docker run (something like `cat marathon.json | docker run -i image)
-- Java library that you can include within your app
-- Maybe a simple webapp UI
+In the future we intend to create a small web app with a JSON Editor (contributions welcome !)
 
 ## Compatibility
 
+
 | Feature         | Status      | Comment                                                                           |
 | --------------- | ----------- | --------------------------------------------------------------------------------- |
-| Single app      | Ok          |                                                                                   |
-| Multiple apps   | Ok          |                                                                                   |
-| Group           | In progress | Need to decide how to properly map Marathon group to kubernetes pods / containers |
-| Instances       | Ok          |                                                                                   |
-| CPU / Mem       | In progress |                                                                                   |
-| PORT_MAPPINGS   | Ok          |                                                                                   |
-| Env             | Ok          |                                                                                   |
-| HAPROXY_X_VHOST | Ok          |                                                                                   |
-| Fetch           | In progress |                                                                                   |
-| Healthcheck     |             |                                                                                   |
+| Single app      | ✅          |                                                                                   |
+| Multiple apps   | ✅          |                                                                                   |
+| Group           | ⌛          | Need to decide how to properly map Marathon group to kubernetes pods / containers |
+| Instances       | ✅          |                                                                                   |
+| CPU / Mem       | ✅          | Resources are defined as "resources requests" not limits                          |
+| PORT_MAPPINGS   | ✅          |                                                                                   |
+| Env             | ✅          |                                                                                   |
+| HAPROXY_X_VHOST | ✅          |                                                                                   |
+| Fetch           | ⌛          |                                                                                   |
+| Healthcheck     | ✅          |                                                                                   |

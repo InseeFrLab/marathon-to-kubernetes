@@ -1,6 +1,8 @@
 language: java
 jdk:
   - openjdk11
+services:
+  - docker
 
 before_install:
   - mvn -B versions:set -DnewVersion=$TRAVIS_BRANCH
@@ -9,7 +11,7 @@ script:
   - mvn -B package
 
 after_success:
-  - mvn clean test org.jacoco:jacoco-maven-plugin:report org.jacoco:jacoco-maven-plugin:report-aggregate org.eluder.coveralls:coveralls-maven-plugin:report
+  - mvn test org.jacoco:jacoco-maven-plugin:report org.jacoco:jacoco-maven-plugin:report-aggregate org.eluder.coveralls:coveralls-maven-plugin:report
 
 deploy:
   skip_cleanup: true
@@ -21,5 +23,19 @@ deploy:
   file:
     - core/target/*.jar
     - cli/target/*.jar
+    - web/target/*.jar
   on:
     tags: true
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script:
+    - cd web && ls target && docker build -t inseefrlab/marathon-to-kubernetes . && echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push inseefrlab/marathon-to-kubernetes
+  on:
+    branch: master
+
+env:
+  global:
+    - secure: N1PIWIeeAK1wP7zfBcaFO++Hs/klUQOmcid7thhEUTP/NqwCfi50eWhU5KucMo9awBqlukOc3tFoDdbkmQY3GfOg7UlS6PISBK+of3lb3HVx+sQYDz1bUQFGtewZZAvrGRvq2qDkgoB/LvMqmvUHrUATIYQZHiHm6CjD1kQisAmdLhiVDPcO0oXXKr5zzCWLWVJek0sGwsb0A4m1JV3/1mnbuEV4tqkyhXEgBH5R/mtfXAs6fPaRPpUR0sf2KYFOOrH8RV4vsS70OVKVZKwo/bboxNPOf0A36gSzYNbU/KpiVgENilgMAKekTEtXSQF+saZe1UVGsdHxrAVrgLgvsk8w4E2zVbD2VE5A2z3cXH2dQQqOi3Q/eGfDpPC9XLrOtFAz9ULjigB2uWn8it3jYblWSQtLWas9UOYi6p/Vgh4Gmt+49SY5kbuPvfLz9QOcGVXCwlpetTGQ+1rCMPb7YUYA7NwwVZ7bli36PbegXGs8BYlyOkF6HhHJyYfV58Q2VzPjnKr/DzMc8DGiXaaJ4ddW9kTa6Jx7hwh0rW/4tdbMcsJz0djZQbh5zDgVrxoT/eUrwlXG9oST2QmXDK54Ua2MxSYrutT4+02m+oQGKw0uGBpSM8icKLHy5nzz870Ig4lbNgJ8iSxLwhndrJCnimh8UzUiAqwuo9Ph8rZaSEQ=
+    - secure: BtlZDXa+MEScMN+eyDkTwHlGUYpr6x5CPv8d5Tq+hE23GcjKBDzQYs2dCRddTFbDBi4BZ+poTcVREaY/z0SrcnmDfCT+qNOPEkZ06L7AWOuOdiU9QNvoI4KH0pILAmSrbpXrOMwgQhA8fjga74X8/jHa/0Lp5xfgfN5TEeeJeFprbg+0dQxHahbdeKGfqxpdkhrb3gp64oELLyM/mFf5swEzz/dh/TylEXZiOBHJmIztNysVXa4v3LhhHJ7YX/NHXM+jeZSYev9nE/NM/dwQb7oHdMV04k6fbkS41CH6FO6kpi8ohuXYAks2yg1jlk9kXqwJv5p5+Ie+rUjflQdYEfjlThBofZ6ICYuSDrWrp59wUrWcG58uZoaXQlEGqkjRKfkn+ViNiPxQqKFnIoIFMTtLGQdFEUtP/JxRGga3TXnQRj8QxionbpJYiC8wu5FheiS1ITqxBCUsiXt17QvM//bYKddgolTDoFsMkwGt0ANj9zCFyPdTnv3Km9iRB/G0xAspoeAGcdI2eRq8sCs/FOAyT7BKn+RToZLtniL9XEkfTNwECcF2gkAXjCBwbJwrR0oCrc/3KB7fu32g4C6Rql372zmWpkxnX1earEhk7o/Xiz7yHtsUH6/OS1+1DGIAu9zjUZhLbHaK2dszPrvIqjMr+4wqIoK1OqZuKQzCVo0=
