@@ -34,12 +34,11 @@ import io.fabric8.kubernetes.api.model.extensions.IngressBuilder;
 import io.fabric8.kubernetes.api.model.extensions.IngressRule;
 import io.fabric8.kubernetes.api.model.extensions.IngressRuleBuilder;
 import mesosphere.marathon.client.model.v2.App;
-import mesosphere.marathon.client.model.v2.Command;
 import mesosphere.marathon.client.model.v2.HealthCheck;
 import mesosphere.marathon.client.model.v2.Port;
 
 @Service
-public class MarathonToKubernetesConverterImpl implements  MarathonToKubernetesConverter {
+public class MarathonToKubernetesConverterImpl implements MarathonToKubernetesConverter {
 
     private static final Pattern PATTERN_HAPROXY_VHOST = Pattern.compile("HAPROXY_([0-9]*)_VHOST");
 
@@ -163,5 +162,17 @@ public class MarathonToKubernetesConverterImpl implements  MarathonToKubernetesC
             return probe;
         }
         return null;
+    }
+
+    @Override
+    public List<HasMetadata> convert(List<App> appsToConvert, String name) {
+        List<HasMetadata> components = new ArrayList<>();
+        appsToConvert.forEach(appToConvert -> {
+            List<HasMetadata> temp = convert(appToConvert, name);
+            for (HasMetadata hasMetadata : temp) {
+                components.add(hasMetadata);
+            }
+        });
+        return components;
     }
 }
