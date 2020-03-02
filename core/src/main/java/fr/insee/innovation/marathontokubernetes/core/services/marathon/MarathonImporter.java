@@ -2,7 +2,10 @@ package fr.insee.innovation.marathontokubernetes.core.services.marathon;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +24,9 @@ public class MarathonImporter {
      * @param input
      * @return the app or null if something went wront
      */
-    public App importMarathonApp(InputStream input) {
+    public List<App> importMarathonApp(InputStream input) {
         try {
-            return mapper.readValue(input, App.class);
+            return Arrays.asList(mapper.readValue(input, App[].class));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

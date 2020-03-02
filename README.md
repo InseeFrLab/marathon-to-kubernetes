@@ -44,14 +44,16 @@ In the future we intend to create a small web app with a JSON Editor (contributi
 
 ## Compatibility
 
-| Feature         | Status      | Comment                                                  |
-| --------------- | ----------- | -------------------------------------------------------- |
-| Single app      | Ok          |                                                          |
-| Group           | In progress |                                                          |
-| Instances       | Ok          |                                                          |
-| CPU / Mem       | Ok          | Resources are defined as "resources requests" not limits |
-| PORT_MAPPINGS   | Ok          |                                                          |
-| Env             | Ok          |                                                          |
-| HAPROXY_X_VHOST | Ok          |                                                          |
-| Fetch           | In progress |                                                          |
-| Healthcheck     |             |                                                          |
+
+| Feature         | Status      | Comment                                                                           |
+| --------------- | ----------- | --------------------------------------------------------------------------------- |
+| Single app      | ✅          |                                                                                   |
+| Multiple apps   | ✅          |                                                                                   |
+| Group           | ⌛          | Need to decide how to properly map Marathon group to kubernetes pods / containers |
+| Instances       | ✅          |                                                                                   |
+| CPU / Mem       | ✅          | Resources are defined as "resources requests" not limits                          |
+| PORT_MAPPINGS   | ✅          |                                                                                   |
+| Env             | ✅          |                                                                                   |
+| HAPROXY_X_VHOST | ✅          |                                                                                   |
+| Fetch           | ⌛          |                                                                                   |
+| Healthcheck     | ✅          |                                                                                   |
